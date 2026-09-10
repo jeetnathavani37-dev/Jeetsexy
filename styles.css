@@ -532,6 +532,40 @@ main {
   outline-offset: 1px;
 }
 
+.log-field--photo {
+  flex: 1 1 100%;
+}
+
+.log-field--photo input[type="file"] {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--card-border);
+  color: var(--muted);
+  font-size: 0.78rem;
+  padding: 0.35rem;
+}
+
+.log-field--photo input[type="file"]::file-selector-button {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  margin-right: 0.6rem;
+  cursor: pointer;
+}
+
+.log-photo-preview {
+  margin-top: 0.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.4rem;
+  object-fit: cover;
+  border: 1px solid var(--card-border);
+}
+
 .log-submit {
   flex: 1 1 100%;
   margin-top: 0.15rem;
@@ -563,6 +597,9 @@ main {
 }
 
 .exercise-last-log {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.78rem;
   color: var(--muted);
   margin: 0;
@@ -570,6 +607,15 @@ main {
 
 .exercise-last-log[data-has-log="true"] {
   color: var(--gold);
+}
+
+.last-log-thumb {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.35rem;
+  object-fit: cover;
+  border: 1px solid var(--card-border);
+  flex-shrink: 0;
 }
 
 .progress-section {
@@ -629,13 +675,28 @@ main {
 
 .activity-row {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
   font-size: 0.85rem;
-  padding: 0.6rem 0.85rem;
+  padding: 0.5rem 0.85rem;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 0.5rem;
+}
+
+.activity-thumb {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.4rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.activity-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
 }
 
 .activity-row-exercise {
