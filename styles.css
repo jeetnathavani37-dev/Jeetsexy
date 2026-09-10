@@ -11,6 +11,21 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* "Champion mentality" theme for the training program page — a bolder,
+   red/black/gold palette layered on the same tokens, scoped so the
+   Motion scroll demo keeps its original blue look. */
+body[data-theme="champion"] {
+  --bg: #0d0707;
+  --card-bg: #1a1112;
+  --card-border: rgba(255, 255, 255, 0.09);
+  --accent: #ff3b30;
+  --accent-soft: rgba(255, 59, 48, 0.16);
+  --gold: #f5c451;
+  --gold-soft: rgba(245, 196, 81, 0.16);
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.16);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -20,8 +35,8 @@ body {
   margin: 0;
   padding: 0;
   background:
-    radial-gradient(60rem 32rem at 15% -10%, rgba(124, 158, 255, 0.16), transparent 60%),
-    radial-gradient(40rem 24rem at 100% 20%, rgba(124, 158, 255, 0.08), transparent 55%),
+    radial-gradient(60rem 32rem at 15% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+    radial-gradient(40rem 24rem at 100% 20%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%),
     var(--bg);
   color: var(--fg);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -404,4 +419,234 @@ main {
   .exercise-icon * {
     animation: none !important;
   }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Training program: commitment bar, set logging, and progress tracking.  */
+/* ---------------------------------------------------------------------- */
+
+.commitment-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  padding: 0.85rem 1.5rem;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.commitment-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.commitment-streak .flame {
+  font-size: 1.1rem;
+}
+
+.commitment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid transparent;
+}
+
+.commitment-status[data-status="trained"] {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.commitment-status[data-status="pending"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  animation: commitment-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes commitment-pulse {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: var(--accent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commitment-status[data-status="pending"] {
+    animation: none;
+  }
+}
+
+.exercise-prescription {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: -0.35rem 0 0;
+}
+
+.log-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.log-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1 1 5rem;
+}
+
+.log-field label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.log-field input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.4rem;
+  color: var(--fg);
+  padding: 0.4rem 0.5rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.log-field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.log-submit {
+  flex: 1 1 100%;
+  margin-top: 0.15rem;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: #1a0503;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform var(--duration-normal) var(--ease-out-expo),
+    filter var(--duration-normal) var(--ease-out-expo);
+}
+
+.log-submit:hover {
+  filter: brightness(1.1);
+}
+
+.log-submit:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .log-submit {
+    transition: none;
+  }
+}
+
+.exercise-last-log {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.exercise-last-log[data-has-log="true"] {
+  color: var(--gold);
+}
+
+.progress-section {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding-top: 1rem;
+}
+
+.progress-heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+}
+
+.progress-heading--sub {
+  font-size: 1.05rem;
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-tile {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 1.1rem;
+}
+
+.stat-tile-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.1;
+}
+
+.stat-tile-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.25rem;
+}
+
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+}
+
+.activity-row-exercise {
+  font-weight: 600;
+}
+
+.activity-row-meta {
+  color: var(--muted);
+}
+
+.activity-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
 }

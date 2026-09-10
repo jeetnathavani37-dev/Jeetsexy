@@ -3,30 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Workout Library</title>
-  <meta name="description" content="Eight bodyweight and free-weight exercises with original CSS/SVG movement icons — no video or GIF assets, just Motion and pure CSS keyframes." />
-  <meta name="theme-color" content="#0b0c10" />
-  <meta property="og:title" content="Workout Library" />
-  <meta property="og:description" content="Eight exercises with original CSS/SVG movement icons — no external media." />
+  <title>Train Like a Champion</title>
+  <meta name="description" content="A beginner weight-training program with a streak tracker and set logging — inspired by elite-athlete discipline. No account, no backend: your progress is saved privately in this browser." />
+  <meta name="theme-color" content="#0d0707" />
+  <meta property="og:title" content="Train Like a Champion" />
+  <meta property="og:description" content="Beginner weight training with a daily streak tracker and progress log." />
   <meta property="og:type" content="website" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b0c10'/%3E%3Ccircle cx='50' cy='50' r='26' fill='%237c9eff'/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230d0707'/%3E%3Ccircle cx='50' cy='50' r='26' fill='%23ff3b30'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body data-theme="champion">
   <nav class="site-nav" aria-label="Site">
     <a class="site-nav-link" href="index.html">Scroll Demo</a>
-    <a class="site-nav-link is-current" href="workouts.html" aria-current="page">Workout Library</a>
+    <a class="site-nav-link is-current" href="workouts.html" aria-current="page">Training Program</a>
   </nav>
 
+  <div class="commitment-bar" role="status" aria-live="polite">
+    <span class="commitment-streak"><span class="flame" aria-hidden="true">🔥</span> <span class="commitment-streak-value">0</span>-day streak</span>
+    <span class="commitment-status" data-status="pending">⚠️ No training logged today</span>
+  </div>
+
   <header class="hero">
-    <h1 class="hero-title">Eight moves, zero media files</h1>
-    <p class="hero-subtitle">Original CSS/SVG movement icons instead of video or GIF assets — animated with the same <code>Motion</code> scroll reveal as the rest of this demo.</p>
+    <h1 class="hero-title">Discipline over motivation</h1>
+    <p class="hero-subtitle">Inspired by the relentless, no-days-off training mentality elite athletes like Cristiano Ronaldo are known for — this beginner program turns showing up into a habit you can't break. Log every set. Never break the streak.</p>
   </header>
 
   <main>
-    <section class="cards" aria-label="exercise library">
-      <article class="card exercise-card">
+    <section class="cards" aria-label="training program">
+      <article class="card exercise-card" data-exercise-id="squat">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-squat" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -47,9 +52,26 @@
         </ul>
         <h2>Bodyweight Squat</h2>
         <p>Lower into a seated position keeping your chest up, then drive through your heels to stand.</p>
+        <p class="exercise-prescription">3 sets × 12 reps — bodyweight to start</p>
+        <form class="log-form" data-exercise-id="squat">
+          <div class="log-field">
+            <label for="squat-weight">Weight (kg)</label>
+            <input id="squat-weight" name="weight" type="number" min="0" step="0.5" placeholder="0" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="squat-reps">Reps</label>
+            <input id="squat-reps" name="reps" type="number" min="1" placeholder="12" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="squat-sets">Sets</label>
+            <input id="squat-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="squat">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="pushup">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-pushup" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -70,9 +92,26 @@
         </ul>
         <h2>Push-Up</h2>
         <p>Lower your chest toward the floor with elbows at roughly 45°, then press back up keeping your core braced.</p>
+        <p class="exercise-prescription">3 sets × 8 reps — knees down if needed</p>
+        <form class="log-form" data-exercise-id="pushup">
+          <div class="log-field">
+            <label for="pushup-weight">Weight (kg)</label>
+            <input id="pushup-weight" name="weight" type="number" min="0" step="0.5" placeholder="0" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="pushup-reps">Reps</label>
+            <input id="pushup-reps" name="reps" type="number" min="1" placeholder="8" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="pushup-sets">Sets</label>
+            <input id="pushup-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="pushup">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="plank">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-plank" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -93,9 +132,26 @@
         </ul>
         <h2>Plank Hold</h2>
         <p>Hold a straight line from head to heels, ribs pulled down, bracing your core rather than sagging your hips.</p>
+        <p class="exercise-prescription">3 sets × 30 sec hold</p>
+        <form class="log-form" data-exercise-id="plank">
+          <div class="log-field">
+            <label for="plank-weight">Weight (kg)</label>
+            <input id="plank-weight" name="weight" type="number" min="0" step="0.5" placeholder="0" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="plank-reps">Seconds</label>
+            <input id="plank-reps" name="reps" type="number" min="1" placeholder="30" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="plank-sets">Sets</label>
+            <input id="plank-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="plank">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="curl">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-curl" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -116,9 +172,26 @@
         </ul>
         <h2>Dumbbell Bicep Curl</h2>
         <p>Curl the weight toward your shoulder without swinging your elbow forward, then control the descent.</p>
+        <p class="exercise-prescription">3 sets × 10 reps — start light (4–6kg)</p>
+        <form class="log-form" data-exercise-id="curl">
+          <div class="log-field">
+            <label for="curl-weight">Weight (kg)</label>
+            <input id="curl-weight" name="weight" type="number" min="0" step="0.5" placeholder="5" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="curl-reps">Reps</label>
+            <input id="curl-reps" name="reps" type="number" min="1" placeholder="10" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="curl-sets">Sets</label>
+            <input id="curl-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="curl">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="lunge">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-lunge" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -139,9 +212,26 @@
         </ul>
         <h2>Forward Lunge</h2>
         <p>Step forward and lower your back knee toward the floor, then push through your front heel back to start.</p>
+        <p class="exercise-prescription">3 sets × 10 reps per leg</p>
+        <form class="log-form" data-exercise-id="lunge">
+          <div class="log-field">
+            <label for="lunge-weight">Weight (kg)</label>
+            <input id="lunge-weight" name="weight" type="number" min="0" step="0.5" placeholder="0" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="lunge-reps">Reps</label>
+            <input id="lunge-reps" name="reps" type="number" min="1" placeholder="10" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="lunge-sets">Sets</label>
+            <input id="lunge-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="lunge">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="jumpingjack">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-jumpingjack" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -162,9 +252,26 @@
         </ul>
         <h2>Jumping Jack</h2>
         <p>Jump your feet apart while raising your arms overhead, then reverse back to the starting stance.</p>
+        <p class="exercise-prescription">3 sets × 20 reps — warm-up pace</p>
+        <form class="log-form" data-exercise-id="jumpingjack">
+          <div class="log-field">
+            <label for="jj-weight">Weight (kg)</label>
+            <input id="jj-weight" name="weight" type="number" min="0" step="0.5" placeholder="0" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="jj-reps">Reps</label>
+            <input id="jj-reps" name="reps" type="number" min="1" placeholder="20" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="jj-sets">Sets</label>
+            <input id="jj-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="jumpingjack">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="press">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-press" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -185,9 +292,26 @@
         </ul>
         <h2>Overhead Shoulder Press</h2>
         <p>Press the weights straight overhead until your arms are fully extended, then lower under control.</p>
+        <p class="exercise-prescription">3 sets × 8 reps — start light (4–6kg)</p>
+        <form class="log-form" data-exercise-id="press">
+          <div class="log-field">
+            <label for="press-weight">Weight (kg)</label>
+            <input id="press-weight" name="weight" type="number" min="0" step="0.5" placeholder="5" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="press-reps">Reps</label>
+            <input id="press-reps" name="reps" type="number" min="1" placeholder="8" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="press-sets">Sets</label>
+            <input id="press-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="press">Not logged yet</p>
       </article>
 
-      <article class="card exercise-card">
+      <article class="card exercise-card" data-exercise-id="deadlift">
         <div class="exercise-icon-frame">
           <svg class="exercise-icon icon-deadlift" viewBox="0 0 100 100" role="img" aria-hidden="true" focusable="false">
             <g class="fig-upper">
@@ -208,10 +332,55 @@
         </ul>
         <h2>Romanian Deadlift</h2>
         <p>Hinge at the hips and lower the weight along your legs with a flat back, then drive your hips forward to stand.</p>
+        <p class="exercise-prescription">3 sets × 8 reps — empty bar or light dumbbells</p>
+        <form class="log-form" data-exercise-id="deadlift">
+          <div class="log-field">
+            <label for="deadlift-weight">Weight (kg)</label>
+            <input id="deadlift-weight" name="weight" type="number" min="0" step="0.5" placeholder="10" inputmode="decimal" />
+          </div>
+          <div class="log-field">
+            <label for="deadlift-reps">Reps</label>
+            <input id="deadlift-reps" name="reps" type="number" min="1" placeholder="8" inputmode="numeric" required />
+          </div>
+          <div class="log-field">
+            <label for="deadlift-sets">Sets</label>
+            <input id="deadlift-sets" name="sets" type="number" min="1" value="3" inputmode="numeric" />
+          </div>
+          <button class="log-submit" type="submit">Log Set</button>
+        </form>
+        <p class="exercise-last-log" data-exercise-last-log="deadlift">Not logged yet</p>
       </article>
+    </section>
+
+    <section class="progress-section" aria-label="your progress">
+      <h2 class="progress-heading">Your progress</h2>
+      <div class="stat-tiles">
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="stat-current-streak">0</div>
+          <div class="stat-tile-label">Current streak</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="stat-best-streak">0</div>
+          <div class="stat-tile-label">Best streak</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="stat-total-sessions">0</div>
+          <div class="stat-tile-label">Total sessions</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="stat-last-trained">Never</div>
+          <div class="stat-tile-label">Last trained</div>
+        </div>
+      </div>
+
+      <h3 class="progress-heading progress-heading--sub">Recent activity</h3>
+      <ul class="activity-list" id="activity-list">
+        <li class="activity-empty">No sets logged yet — your first entry starts the streak.</li>
+      </ul>
     </section>
   </main>
 
   <script type="module" src="script.js"></script>
+  <script type="module" src="progress.js"></script>
 </body>
 </html>
