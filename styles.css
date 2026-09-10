@@ -39,10 +39,40 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+.site-nav,
 .hero,
 main {
   position: relative;
   z-index: 1;
+}
+
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.site-nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color var(--duration-normal) var(--ease-out-expo),
+    border-color var(--duration-normal) var(--ease-out-expo);
+}
+
+.site-nav-link:hover {
+  color: var(--fg);
+}
+
+.site-nav-link.is-current {
+  color: var(--accent);
+  border-color: var(--accent-soft);
+  background: var(--accent-soft);
 }
 
 .hero {
@@ -158,4 +188,220 @@ main {
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Workout library: original CSS/SVG exercise icons (no external assets). */
+/* ---------------------------------------------------------------------- */
+
+.exercise-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exercise-icon-frame {
+  align-self: center;
+  width: 100%;
+  max-width: 8rem;
+  aspect-ratio: 1;
+}
+
+.exercise-icon {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.exercise-icon * {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fig-arm-l,
+.fig-arm-r {
+  transform-origin: 50px 34px;
+}
+
+.fig-leg-l,
+.fig-leg-r {
+  transform-origin: 50px 58px;
+}
+
+.fig-upper {
+  transform-origin: 50px 58px;
+}
+
+.exercise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.15rem;
+  padding: 0;
+  list-style: none;
+}
+
+.exercise-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+/* Squat: torso sinks, legs bow slightly at the knee line. */
+.icon-squat .fig-upper {
+  animation: squat-upper 1.8s ease-in-out infinite;
+}
+.icon-squat .fig-leg-l {
+  animation: squat-leg-l 1.8s ease-in-out infinite;
+}
+.icon-squat .fig-leg-r {
+  animation: squat-leg-r 1.8s ease-in-out infinite;
+}
+@keyframes squat-upper {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+@keyframes squat-leg-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-10deg); }
+}
+@keyframes squat-leg-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* Push-up: shallow dip with arms bracing. */
+.icon-pushup .fig-upper {
+  animation: pushup-upper 1.5s ease-in-out infinite;
+}
+.icon-pushup .fig-arm-l {
+  animation: pushup-arm-l 1.5s ease-in-out infinite;
+}
+.icon-pushup .fig-arm-r {
+  animation: pushup-arm-r 1.5s ease-in-out infinite;
+}
+@keyframes pushup-upper {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+@keyframes pushup-arm-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(18deg); }
+}
+@keyframes pushup-arm-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-18deg); }
+}
+
+/* Plank: isometric hold, subtle tension pulse instead of movement. */
+.icon-plank .fig-upper,
+.icon-plank .fig-legs {
+  animation: plank-pulse 2.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes plank-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Bicep curl: forearm swings up toward the shoulder. */
+.icon-curl .fig-arm-l {
+  animation: curl-arm-l 1.6s ease-in-out infinite;
+}
+.icon-curl .fig-arm-r {
+  animation: curl-arm-r 1.6s ease-in-out infinite;
+}
+@keyframes curl-arm-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-75deg); }
+}
+@keyframes curl-arm-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(75deg); }
+}
+
+/* Lunge: legs step forward and back, alternating. */
+.icon-lunge .fig-leg-l {
+  animation: lunge-leg-l 1.8s ease-in-out infinite;
+}
+.icon-lunge .fig-leg-r {
+  animation: lunge-leg-r 1.8s ease-in-out infinite;
+}
+@keyframes lunge-leg-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-20deg); }
+}
+@keyframes lunge-leg-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
+}
+
+/* Jumping jack: arms raise overhead as legs jump apart. */
+.icon-jumpingjack .fig-arm-l {
+  animation: jj-arm-l 1.2s ease-in-out infinite;
+}
+.icon-jumpingjack .fig-arm-r {
+  animation: jj-arm-r 1.2s ease-in-out infinite;
+}
+.icon-jumpingjack .fig-leg-l {
+  animation: jj-leg-l 1.2s ease-in-out infinite;
+}
+.icon-jumpingjack .fig-leg-r {
+  animation: jj-leg-r 1.2s ease-in-out infinite;
+}
+@keyframes jj-arm-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-150deg); }
+}
+@keyframes jj-arm-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(150deg); }
+}
+@keyframes jj-leg-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-25deg); }
+}
+@keyframes jj-leg-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(25deg); }
+}
+
+/* Overhead press: arms extend fully upward from the shoulder. */
+.icon-press .fig-arm-l {
+  animation: press-arm-l 1.7s ease-in-out infinite;
+}
+.icon-press .fig-arm-r {
+  animation: press-arm-r 1.7s ease-in-out infinite;
+}
+@keyframes press-arm-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-165deg); }
+}
+@keyframes press-arm-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(165deg); }
+}
+
+/* Romanian deadlift: hip hinge, torso folds forward and returns. */
+.icon-deadlift .fig-upper {
+  animation: deadlift-hinge 2s ease-in-out infinite;
+}
+@keyframes deadlift-hinge {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(32deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exercise-icon * {
+    animation: none !important;
+  }
 }
