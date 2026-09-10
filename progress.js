@@ -4,6 +4,8 @@ const STORE_NAME = 'logs';
 const LEGACY_STORAGE_KEY = 'championLog.v1';
 const PHOTO_MAX_DIMENSION = 480;
 const PHOTO_QUALITY = 0.72;
+const PHOTO_BUCKET = 'champion-photos';
+const SIGNED_URL_TTL_SECONDS = 60 * 60;
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
@@ -47,7 +49,7 @@ async function migrateLegacyLocalStorage(db) {
   if (!legacy || !Array.isArray(legacy.logs) || !legacy.logs.length) return;
 
   for (const log of legacy.logs) {
-    await putLog(db, { photo: null, ...log, id: log.ts ?? Date.now() + Math.random() });
+    await putLog(db, { photo: null, synced: false, ...log, id: crypto.randomUUID() });
   }
   try {
     localStorage.removeItem(LEGACY_STORAGE_KEY);
@@ -82,6 +84,107 @@ function compressImage(file, maxDim = PHOTO_MAX_DIMENSION, quality = PHOTO_QUALI
 
     img.src = objectUrl;
   });
+}
+
+// Loaded lazily via dynamic import so a blocked/slow CDN or Supabase outage
+// can never break the local-only features (IndexedDB logging, streaks,
+// stats) — those have zero static dependency on this module.
+let cloudContextPromise = null;
+
+function getCloudContext() {
+  if (!cloudContextPromise) {
+    cloudContextPromise = (async () => {
+      const { supabase, ensureAnonymousSession } = await import('./supabase-client.js');
+      const session = await ensureAnonymousSession();
+      return { supabase, userId: session.user.id };
+    })();
+  }
+  return cloudContextPromise;
+}
+
+async function dataUrlToBlob(dataUrl) {
+  const response = await fetch(dataUrl);
+  return response.blob();
+}
+
+async function syncLogToSupabase(supabase, userId, log) {
+  const photoPath = `${userId}/${log.id}.jpg`;
+  const blob = await dataUrlToBlob(log.photo);
+
+  const { error: uploadError } = await supabase.storage
+    .from(PHOTO_BUCKET)
+    .upload(photoPath, blob, { contentType: 'image/jpeg', upsert: true });
+  if (uploadError) throw uploadError;
+
+  const { error: insertError } = await supabase.from('champion_logs').insert({
+    id: log.id,
+    exercise_id: log.exerciseId,
+    log_date: log.date,
+    weight: log.weight,
+    reps: log.reps,
+    sets: log.sets,
+    photo_path: photoPath,
+  });
+  // Postgres unique_violation — this row already synced from an earlier attempt.
+  if (insertError && insertError.code !== '23505') throw insertError;
+}
+
+async function pullRemoteLogs(supabase, db, localIds) {
+  const { data, error } = await supabase
+    .from('champion_logs')
+    .select('*')
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+
+  const pulled = [];
+  for (const row of data) {
+    if (localIds.has(row.id)) continue;
+
+    const { data: signed } = await supabase.storage
+      .from(PHOTO_BUCKET)
+      .createSignedUrl(row.photo_path, SIGNED_URL_TTL_SECONDS);
+
+    const entry = {
+      id: row.id,
+      exerciseId: row.exercise_id,
+      date: row.log_date,
+      ts: new Date(row.created_at).getTime(),
+      weight: Number(row.weight),
+      reps: row.reps,
+      sets: row.sets,
+      photo: signed?.signedUrl ?? null,
+      synced: true,
+    };
+    await putLog(db, entry);
+    pulled.push(entry);
+  }
+  return pulled;
+}
+
+async function syncPendingLocalLogs(supabase, db, userId, logs) {
+  const pending = logs.filter((log) => log.synced !== true && log.photo);
+  for (const log of pending) {
+    try {
+      await syncLogToSupabase(supabase, userId, log);
+      log.synced = true;
+      await putLog(db, log);
+    } catch (error) {
+      console.warn('[progress] Sync failed for log', log.id, error);
+    }
+  }
+}
+
+function updateSyncBadge(state) {
+  const badge = document.getElementById('sync-badge');
+  if (!badge) return;
+
+  const labels = {
+    syncing: '☁️ Syncing…',
+    synced: '☁️ Backed up',
+    offline: '⚠️ Not backed up (saved on this device only)',
+  };
+  badge.textContent = labels[state] ?? '';
+  badge.dataset.syncState = state;
 }
 
 function todayKey(date = new Date()) {
@@ -274,7 +377,7 @@ function wireLogForm(form, db, logs) {
     try {
       const photo = await compressImage(photoFile);
       const entry = {
-        id: Date.now() + Math.random(),
+        id: crypto.randomUUID(),
         exerciseId: form.dataset.exerciseId,
         date: todayKey(),
         ts: Date.now(),
@@ -282,6 +385,7 @@ function wireLogForm(form, db, logs) {
         reps,
         sets,
         photo,
+        synced: false,
       };
 
       await putLog(db, entry);
@@ -290,6 +394,18 @@ function wireLogForm(form, db, logs) {
       form.reset();
       form.elements.sets.value = sets;
       clearPhotoPreview(form);
+
+      // Background cloud backup — local save already succeeded, so this
+      // never blocks the visible "Log Set" flow. Failures retry next load.
+      getCloudContext()
+        .then(({ supabase, userId }) => syncLogToSupabase(supabase, userId, entry))
+        .then(() => {
+          entry.synced = true;
+          return putLog(db, entry);
+        })
+        .catch((error) => {
+          console.warn('[progress] Background sync failed for this set, will retry next load:', error);
+        });
     } catch (error) {
       console.error('[progress] Failed to save logged set:', error);
     } finally {
@@ -305,11 +421,28 @@ async function init() {
   const logs = await getAllLogs(db);
 
   renderAll(logs);
+  updateSyncBadge('syncing');
 
   document.querySelectorAll('.log-form').forEach((form) => {
     wirePhotoPreview(form);
     wireLogForm(form, db, logs);
   });
+
+  try {
+    const { supabase, userId } = await getCloudContext();
+    const localIds = new Set(logs.map((log) => log.id));
+    const pulled = await pullRemoteLogs(supabase, db, localIds);
+    if (pulled.length) {
+      logs.push(...pulled);
+      renderAll(logs);
+    }
+
+    await syncPendingLocalLogs(supabase, db, userId, logs);
+    updateSyncBadge('synced');
+  } catch (error) {
+    console.warn('[progress] Cloud sync unavailable — your data is still saved on this device:', error);
+    updateSyncBadge('offline');
+  }
 }
 
 if (document.readyState === 'loading') {

@@ -487,6 +487,20 @@ main {
   }
 }
 
+.sync-badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.sync-badge[data-sync-state="synced"] {
+  color: var(--success);
+}
+
+.sync-badge[data-sync-state="offline"] {
+  color: var(--accent);
+}
+
 .exercise-prescription {
   font-size: 0.85rem;
   font-weight: 600;
