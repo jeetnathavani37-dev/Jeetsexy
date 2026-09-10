@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motion Scroll Reveal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1 class="hero-title">Scroll to see it move</h1>
+    <p class="hero-subtitle">A minimal demo of Motion's <code>animate</code>, <code>inView</code>, and <code>stagger</code>.</p>
+  </header>
+
+  <main>
+    <section class="cards" aria-label="feature cards">
+      <article class="card">
+        <h2>Fade in</h2>
+        <p>Each card animates independently as it enters the viewport.</p>
+      </article>
+      <article class="card">
+        <h2>Staggered</h2>
+        <p>Cards reveal in sequence rather than all at once.</p>
+      </article>
+      <article class="card">
+        <h2>Once only</h2>
+        <p><code>inView</code> triggers a single time per element by default.</p>
+      </article>
+      <article class="card">
+        <h2>Lightweight</h2>
+        <p>No build step — Motion is loaded straight from a CDN.</p>
+      </article>
+      <article class="card">
+        <h2>Accessible</h2>
+        <p>Reduced-motion preference is respected automatically.</p>
+      </article>
+      <article class="card">
+        <h2>Composable</h2>
+        <p>Combine with <code>scroll()</code> or gestures for richer effects.</p>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
