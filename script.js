@@ -1,9 +1,9 @@
-import { animate, inView, stagger } from 'https://cdn.jsdelivr.net/npm/motion@latest/+esm';
+import { animate, inView, stagger } from 'https://cdn.jsdelivr.net/npm/motion@13.2.0/+esm';
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const cards = document.querySelectorAll('.card');
 
-if (!prefersReducedMotion) {
+if (!prefersReducedMotion && cards.length) {
   animate(cards, { opacity: 0, y: 24 }, { duration: 0 });
 
   inView('.cards', () => {

@@ -4,7 +4,11 @@
   --fg: #f4f4f5;
   --muted: #a1a1aa;
   --card-bg: #17181d;
+  --card-border: rgba(255, 255, 255, 0.08);
   --accent: #7c9eff;
+  --accent-soft: rgba(124, 158, 255, 0.15);
+  --duration-normal: 220ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -12,11 +16,33 @@
 }
 
 body {
+  position: relative;
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(60rem 32rem at 15% -10%, rgba(124, 158, 255, 0.16), transparent 60%),
+    radial-gradient(40rem 24rem at 100% 20%, rgba(124, 158, 255, 0.08), transparent 55%),
+    var(--bg);
   color: var(--fg);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Subtle grain for atmosphere, layered over the gradients above. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero,
+main {
+  position: relative;
+  z-index: 1;
 }
 
 .hero {
@@ -30,18 +56,22 @@ body {
 }
 
 .hero-title {
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  margin: 0 0 0.75rem;
+  font-size: clamp(2.25rem, 7vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 0.85rem;
 }
 
 .hero-subtitle {
   color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   max-width: 32rem;
   margin: 0;
 }
 
 code {
-  background: rgba(124, 158, 255, 0.15);
+  background: var(--accent-soft);
   color: var(--accent);
   padding: 0.1rem 0.4rem;
   border-radius: 0.3rem;
@@ -54,24 +84,77 @@ main {
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
   max-width: 60rem;
   margin: 0 auto;
+  counter-reset: card-index;
+}
+
+@media (min-width: 640px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card--feature {
+    grid-column: span 2;
+  }
 }
 
 .card {
+  position: relative;
+  overflow: hidden;
   background: var(--card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--card-border);
   border-radius: 0.75rem;
   padding: 1.5rem;
+  counter-increment: card-index;
+  transition: transform var(--duration-normal) var(--ease-out-expo),
+    border-color var(--duration-normal) var(--ease-out-expo);
+}
+
+.card::before {
+  content: counter(card-index, decimal-leading-zero);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.85rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--fg);
+  opacity: 0.06;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.card--feature h2 {
+  font-size: 1.35rem;
+}
+
+.card--feature p {
+  max-width: 30rem;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 
 .card h2 {
+  position: relative;
   margin: 0 0 0.5rem;
   font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .card p {
+  position: relative;
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
